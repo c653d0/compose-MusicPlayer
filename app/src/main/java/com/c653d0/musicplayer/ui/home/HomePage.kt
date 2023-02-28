@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.text.BasicText
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -25,7 +26,6 @@ import com.c653d0.musicplayer.bean.SongBean
 import com.c653d0.musicplayer.ui.theme.*
 import com.c653d0.musicplayer.util.PlayerUtil
 
-class HomePage {
     private val player: PlayerUtil = PlayerUtil.getObj()
 
     @Composable
@@ -48,15 +48,15 @@ class HomePage {
     }
 
     @Composable
-    fun itemSong(song: SongBean, context: Context,isPlay: MutableState<Boolean>){
+    private fun itemSong(song: SongBean, context: Context,isPlay: MutableState<Boolean>){
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(all = 2.dp)
+                .padding(all = 1.dp)
                 .clip(CircleShape)
                 .background(ListBG)
                 .clickable {
-                    player.playMusic(context, song.path)
+                    player.playMusic(context, song)
                     isPlay.value = true
                 }
         ){
@@ -108,21 +108,28 @@ class HomePage {
                 .background(ToolbarBG)
                 .clickable { }
             ) {
+
+                BasicText(
+                    modifier = Modifier.align(Alignment.BottomStart),
+                    text = player.getCurrentSong().name
+                )
+
                 IconButton(
                     modifier = Modifier.align(Alignment.BottomEnd),
                     onClick = {
-                    if (isPlay.value){
-                        player.pauseMusic()
+                        if (isPlay.value){
+                            player.pauseMusic()
 
-                        isPlay.value=false
-                        player.isPlayed = false
-                    }else{
-                        player.continueMusic()
+                            isPlay.value=false
+                            player.isPlayed = false
+                        }else{
+                            player.continueMusic()
 
-                        isPlay.value=true
-                        player.isPlayed=true
+                            isPlay.value=true
+                            player.isPlayed=true
+                        }
                     }
-                }) {
+                ) {
                     if(isPlay.value){
                         Icon(painter = painterResource(id = com.c653d0.musicplayer.R.drawable.ic_baseline_pause_24), contentDescription = "暂停")
                     }else{
@@ -140,4 +147,3 @@ class HomePage {
 
         return "${mm}:${if(ss<10) "0" else ""}${ss}"
     }
-}

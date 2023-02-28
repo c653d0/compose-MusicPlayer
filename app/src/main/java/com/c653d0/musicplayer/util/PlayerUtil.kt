@@ -3,14 +3,17 @@ package com.c653d0.musicplayer.util
 import android.content.Context
 import android.media.MediaPlayer
 import android.net.Uri
+import com.c653d0.musicplayer.bean.SongBean
 
 class PlayerUtil private constructor(){
+    val TAG = "PlayerUtil"
+
     private lateinit var mediaPlayer:MediaPlayer
     var lastClickTime = 0L
     var isPlayed = false
-    val TAG = "PlayerUtil"
+    private var currentSong:SongBean = SongBean()
 
-    fun playMusic(context: Context, path:String){
+    fun playMusic(context: Context, song:SongBean){
         if(System.currentTimeMillis()-200 < lastClickTime){
             return
         }
@@ -22,7 +25,8 @@ class PlayerUtil private constructor(){
 
         }
         mediaPlayer = MediaPlayer().apply {
-            setDataSource(context, Uri.parse(path))
+            setDataSource(context, Uri.parse(song.path))
+            currentSong = song
             prepareAsync()
             setOnPreparedListener {
                 it.start()
@@ -45,6 +49,10 @@ class PlayerUtil private constructor(){
     fun continueMusic(){
         mediaPlayer.start()
         isPlayed=true
+    }
+
+    fun getCurrentSong():SongBean{
+        return currentSong
     }
 
 
